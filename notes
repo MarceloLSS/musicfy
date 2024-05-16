@@ -1,0 +1,7 @@
+idUsuario int AI PK 
+nomeUsuario varchar(100) 
+emailUsuario varchar(100) 
+senhaUsuario varchar(45) 
+categoriaMusical varchar(45)
+
+{ nomeUsuario, emailUsuario, senhaUsuario, categoriaMusical }
