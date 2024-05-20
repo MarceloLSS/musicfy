@@ -21,6 +21,11 @@ function x (){}
 
 // ROTAS
 
+
+
+
+
+
 //Cadastrar um novo usuario
 app.post('/usuarios/cadastrar',  (req, res) => {
     const { nomeUsuario, emailUsuario, senhaUsuario, categoriaMusical } = req.body
