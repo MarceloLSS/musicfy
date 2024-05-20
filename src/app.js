@@ -1,11 +1,9 @@
 import express from 'express'
-import cors from 'cors'
 import conexao from './models/conexao.js'
-import { fileURLToPath } from 'url'
-import path from 'path'
+import { fileURLToPath } from 'url' 
+import path from 'path' 
 
 const app = express()
-app.use(cors())
 app.use(express.json())
 
 app.use(express.urlencoded({ extended: true }))
@@ -17,14 +15,14 @@ app.use(express.static(__dirname))
 
 
 //FUNÇÕES AUXILIARES 
-function x() { }
+function x (){}
 //FUNÇÕES AUXILIARES
 
 
 // ROTAS
 
 //Cadastrar um novo usuario
-app.post('/usuarios/cadastrar', (req, res) => {
+app.post('/usuarios/cadastrar',  (req, res) => {
     const { nomeUsuario, emailUsuario, senhaUsuario, categoriaMusical } = req.body
 
     // Primeiro, verifica se o e-mail já existe
@@ -80,5 +78,4 @@ app.post('/usuarios/login', (req, res) => {
 
 ////////////////
 export default app
-
 

@@ -1,16 +1,12 @@
-const mysql = require("mysql2/promise");
+import mysql from 'mysql'
 
-require("dotenv").config();
-
-const connection = mysql.createPool({
-    host : process.env.MYSQL_HOST,
-    user : process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    database : process.env.MYSQL_DATABASE
-}
-);
-
-
+const conexao = mysql.createConnection({
+    host: 'localhost',
+    port: '3306',
+    user: 'root',
+    password: '1234567',
+    database: 'musify'
+})
 
 conexao.connect(erro => {
     if (erro) {
@@ -20,4 +16,4 @@ conexao.connect(erro => {
     console.log('Conexão ao banco de dados MySQL estabelecida');
 })
 
-module.exports = connection;
+export default conexao
