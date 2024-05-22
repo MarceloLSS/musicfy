@@ -19,13 +19,14 @@ app.use(express.static(__dirname))
 
 
 //FUNÇÕES AUXILIARES 
-function x() { }
+function x() { 
 
-
-function cripitarSenha(senha) {
 
 
 }
+
+
+
 //FUNÇÕES AUXILIARES
 
 
@@ -118,16 +119,25 @@ app.post('/usuarios/login', (req, res) => {
     const hash = bcrypt.hashSync(minhaSenha, salt);
 
     conexao.query(loginQuery, [emailUsuario, hash], (erro, resultados) => {
-        if (erro) {
-            res.status(500).send('Erro ao efetuar login')
+
+        try 
+        {
+            if (resultados.length > 0) {
+                res.status(200).send('Login efetuado com sucesso!')
+            } else {
+                res.status(401).send('Credenciais inválidas')
+            }
+        } 
+        
+        catch (erro) 
+        {
+            res.status(500).send('Login Invalido')
             return
         }
 
-        if (resultados.length > 0) {
-            res.status(200).send('Login efetuado com sucesso!')
-        } else {
-            res.status(401).send('Credenciais inválidas')
-        }
+       
+
+        
     })
 })
 
