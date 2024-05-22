@@ -2,7 +2,7 @@ import express from 'express'
 import conexao from './models/conexao.js'
 import { fileURLToPath } from 'url'
 import path from 'path'
-const createHmac = import('node:crypto');
+
 import bcrypt from "bcrypt";
 
 
