@@ -2,6 +2,10 @@ import express from 'express'
 import conexao from './models/conexao.js'
 import { fileURLToPath } from 'url'
 import path from 'path'
+const createHmac = import('node:crypto');
+import bcrypt from "bcrypt";
+
+
 
 const app = express()
 app.use(express.json())
@@ -16,6 +20,12 @@ app.use(express.static(__dirname))
 
 //FUNÇÕES AUXILIARES 
 function x() { }
+
+
+function cripitarSenha(senha) {
+
+
+}
 //FUNÇÕES AUXILIARES
 
 
@@ -41,21 +51,21 @@ app.get('/musicas', (req, res) => {
 
 
 app.post('/add/musicas', (req, res) => {
-  const { NomeMusica, Cifra, LinkMusica } = req.body;
-  
-  if (!NomeMusica || !LinkMusica) {
-    return res.status(400).send('Nome da Música e Link da Música são obrigatórios');
-  }
+    const { NomeMusica, Cifra, LinkMusica } = req.body;
 
-  const sql = 'INSERT INTO musicas (NomeMusica, Cifra, LinkMusica) VALUES (?, ?, ?)';
-  conexao.query(sql, [NomeMusica, Cifra, LinkMusica], (error, results) => {
-    if (error) {
-      console.error('Erro ao inserir dados:', error);
-      res.status(500).send('Erro ao inserir dados');
-      return;
+    if (!NomeMusica || !LinkMusica) {
+        return res.status(400).send('Nome da Música e Link da Música são obrigatórios');
     }
-    res.status(201).send('Música adicionada com sucesso');
-  });
+
+    const sql = 'INSERT INTO musicas (NomeMusica, Cifra, LinkMusica) VALUES (?, ?, ?)';
+    conexao.query(sql, [NomeMusica, Cifra, LinkMusica], (error, results) => {
+        if (error) {
+            console.error('Erro ao inserir dados:', error);
+            res.status(500).send('Erro ao inserir dados');
+            return;
+        }
+        res.status(201).send('Música adicionada com sucesso');
+    });
 });
 
 
@@ -78,7 +88,14 @@ app.post('/usuarios/cadastrar', (req, res) => {
         } else {
             // Se o e-mail não existe, insere o novo usuário
             const insertQuery = 'INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ? )'
-            conexao.query(insertQuery, [nomeUsuario, emailUsuario, senhaUsuario], (erro, resultado) => {
+
+            const saltRounds = 10;
+            const minhaSenha = senhaUsuario;
+
+            const salt = bcrypt.genSaltSync(saltRounds);
+            const hash = bcrypt.hashSync(minhaSenha, salt);
+
+            conexao.query(insertQuery, [nomeUsuario, emailUsuario, hash], (erro, resultado) => {
                 if (erro) {
                     res.status(500).send('Erro ao cadastrar usuário')
                 } else {
@@ -94,7 +111,13 @@ app.post('/usuarios/login', (req, res) => {
     const { emailUsuario, senhaUsuario } = req.body
 
     const loginQuery = 'SELECT * FROM usuarios WHERE email = ? AND senha = ?'
-    conexao.query(loginQuery, [emailUsuario, senhaUsuario], (erro, resultados) => {
+
+    const saltRounds = 10;
+    const minhaSenha = senhaUsuario;
+    const salt = bcrypt.genSaltSync(saltRounds);
+    const hash = bcrypt.hashSync(minhaSenha, salt);
+
+    conexao.query(loginQuery, [emailUsuario, hash], (erro, resultados) => {
         if (erro) {
             res.status(500).send('Erro ao efetuar login')
             return
