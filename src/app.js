@@ -20,8 +20,43 @@ function x() { }
 
 
 // ROTAS
+app.get('/', (req, res) => {
+    res.status(200).send('rodando')
+})
 
 
+app.get('/musicas', (req, res) => {
+    const sql = 'SELECT * FROM musicas';
+    conexao.query(sql, (error, results) => {
+        if (error) {
+            console.error('Erro ao recuperar dados:', error);
+            res.status(500).send('Erro ao recuperar dados');
+            return;
+        }
+
+        res.json(results);
+    });
+});
+
+
+
+app.post('/add/musicas', (req, res) => {
+  const { NomeMusica, Cifra, LinkMusica } = req.body;
+  
+  if (!NomeMusica || !LinkMusica) {
+    return res.status(400).send('Nome da Música e Link da Música são obrigatórios');
+  }
+
+  const sql = 'INSERT INTO musicas (NomeMusica, Cifra, LinkMusica) VALUES (?, ?, ?)';
+  conexao.query(sql, [NomeMusica, Cifra, LinkMusica], (error, results) => {
+    if (error) {
+      console.error('Erro ao inserir dados:', error);
+      res.status(500).send('Erro ao inserir dados');
+      return;
+    }
+    res.status(201).send('Música adicionada com sucesso');
+  });
+});
 
 
 
@@ -58,7 +93,7 @@ app.post('/usuarios/cadastrar', (req, res) => {
 app.post('/usuarios/login', (req, res) => {
     const { emailUsuario, senhaUsuario } = req.body
 
-    const loginQuery = 'SELECT * FROM usuarios WHERE emailUsuario = ? AND senhaUsuario = ?'
+    const loginQuery = 'SELECT * FROM usuarios WHERE email = ? AND senha = ?'
     conexao.query(loginQuery, [emailUsuario, senhaUsuario], (erro, resultados) => {
         if (erro) {
             res.status(500).send('Erro ao efetuar login')
